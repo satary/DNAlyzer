@@ -1,8 +1,4 @@
-
 # coding: utf-8
-
-# In[34]:
-
 
 from pylab import * #mathplotlib + numpy
 #ion() #turns interactive mode on
@@ -15,25 +11,30 @@ get_ipython().magic('matplotlib notebook')
 
 def plot_coord_system(pos,M,axes):
     '''
-    builds diagram of each base reference coord system
+    This function builds diagram of
+    each base reference coord system
     '''
-    axes.quiver(pos[0],pos[1],pos[2],M[0,0],M[0,1],M[0,2],color='g',pivot='tail')
+    axes.quiver(pos[0],pos[1],pos[2],M[0,0],M[0,1],M[0,2],color='g',pivot='tail') # plots 2D field of arrows
     axes.quiver(pos[0],pos[1],pos[2],M[1,0],M[1,1],M[1,2],color='b',pivot='tail')
     axes.quiver(pos[0],pos[1],pos[2],M[2,0],M[2,1],M[2,2],color='r',pivot='tail')
 
 def axisEqual3D(ax):
     '''
-    makes equal steps and axis to make 3d diagram
+    This function makes equal steps and axis to make 3d diagram
     '''
-    extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
+    extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz']) # creates an array with
     sz = extents[:,1] - extents[:,0]
-    centers = np.mean(extents, axis=1)
+    centers = np.mean(extents, axis=1) # Compute the arithmetic mean along the specified axis
     maxsize = max(abs(sz))
     r = maxsize/2
     for ctr, dim in zip(centers, 'xyz'):
         getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
         
 def get_middle_frame(V1,V2,R1,R2):
+    '''
+    This function counts middle frame of nucleic base and
+    returns frame vector and rotation matrix
+    '''
     z1 = R1[:,2]
     z2 = R2[:,2]
      
@@ -47,9 +48,17 @@ def get_middle_frame(V1,V2,R1,R2):
     return Vm, Rm
 
 def dot_product(v,w):
+    '''
+    This function takes two equal
+    coordinate vectors and returns a single number,
+    scalar product
+    '''
     return v[0]*w[0]+v[1]*w[1]+v[2]*w[2]
 
 def rmat(axis, phi):
+    '''
+    This function counts rotation matrix by given axis and angle
+    '''
     axis=axis/ np.linalg.norm(axis)
     u1=axis[0]
     u2=axis[1]
@@ -61,6 +70,9 @@ def rmat(axis, phi):
                      [(1-c)*u1*u3-u2*s, (1-c)*u2*u3+u1*s,   c+(1-c)*u3*u3]])
 
 def get_params_for_single_step(o1,o2,R1,R2):
+    '''
+    This functions returns base frame's parameters
+    '''
     z1=R1[:,2]
     z2=R2[:,2]
     hinge= np.cross(z1,z2)/np.linalg.norm(np.cross(z1,z2))
@@ -78,11 +90,9 @@ def get_params_for_single_step(o1,o2,R1,R2):
     tilt=RollTilt*np.sin(phi)
     return shift,slide,rise,np.rad2deg(tilt),np.rad2deg(roll),twist
 
+###
 
-# In[125]:
-
-
-dna = parsePDB('4c64.pdb').select('nucleic')
+dna = parsePDB('4c64.pdb').select('nucleic') # imports DNA structure from .pdb file
 ref = {'A': parsePDB('ref_frames/BDNA_A.pdb'),
        'T': parsePDB('ref_frames/BDNA_T.pdb'),
        'G': parsePDB('ref_frames/BDNA_G.pdb'),
@@ -92,9 +102,7 @@ sel_dic = {'A' :'name N9 C8 N7 C5 C6 N1 C2 N3 C4',
            'G': 'name N9 C8 N7 C5 C6 N1 C2 N3 C4',
            'C': 'name N1 C2 N3 C4 C5 C6'}
 
-
-# In[126]:
-
+###
 
 #target = dna.select('resnum 2')
 #t_name = target.getResnames()[0][-1]
@@ -108,19 +116,19 @@ matr=[]
 
 
 
-if (resids.size%2) == 0: 
-    resids= resids.reshape([2,-1]) 
-    resids[1]=resids[1,::-1] 
+if (resids.size%2) == 0: # проверка четности количества остатков
+    resids= resids.reshape([2,-1]) # выборка
+    resids[1]=resids[1,::-1] # в обратную сторону
     resids = resids.T
     
     for indexes in resids:
-        targetA = dna.select('resnum %d' % indexes[0]) 
+        targetA = dna.select('resnum %d' % indexes[0]) # selection of 2 DNA chains
         targetB = dna.select('resnum %d' % indexes[1])
         
-        t_nameA = targetA.getResnames()[0][-1]
+        t_nameA = targetA.getResnames()[0][-1] # получить названия остатков
         t_nameB = targetB.getResnames()[0][-1]
         
-        targetA=targetA.select(sel_dic[t_nameA])
+        targetA=targetA.select(sel_dic[t_nameA]) # выборка
         targetB=targetB.select(sel_dic[t_nameB])
         
         fitgroupA=ref[t_nameA].select(sel_dic[t_nameA]).copy()
