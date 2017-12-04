@@ -6,8 +6,22 @@ import os
 import glob
 
 
-def nucleic_test(pdb_file):
 
+def saving_file(PDB_index):
+    '''
+    This function creates temporary path
+    saves there fetched PDB file
+    '''
+    if not os.path.isdir('static')
+        os.mkdir('static')
+       
+
+
+def nucleic_test(pdb_file):
+    '''
+    This function tests PDB file for
+    DNA chains in it.
+    '''
 
 
 
