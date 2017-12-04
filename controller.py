@@ -1,5 +1,5 @@
 from model import InputForm
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, json
 import compute
 
 app=Flask(__name__)
@@ -8,7 +8,8 @@ app=Flask(__name__)
 def index():
     form=InputForm(request.form)
     if request.method=='POST' and form.validate():
-        result=compute.compute(form.PDB_index.data)
+        result=compute.graph(form.PDB_index.data)
+        
     else:
         result=None
 
