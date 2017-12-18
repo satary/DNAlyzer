@@ -5,15 +5,19 @@ import compute
 app=Flask(__name__)
 
 @app.route('/DNAlysis',methods=['GET','POST'])
-def index():
-    form=InputForm(request.form)
-    if request.method=='POST' and form.validate():
-        result=compute.graph(form.PDB_index.data)
-        
-    else:
-        result=None
+def home():
+    return render_template('index.html')
 
-    return render_template('view.html', form=form, result=result)
+@app.route('/query',methods=['POST'])
+def query():
+    print("query")
+    if request.method=='POST' and form.validate():
+        data = json.loads(request.data)
+        return draw_fig(PDB_index)
+    else:
+        data=None
+
+    
 
 if __name__=='__main__':
     app.run(debug=True) 
