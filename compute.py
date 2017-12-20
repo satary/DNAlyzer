@@ -59,4 +59,30 @@ def deleting_directory():
     os.chdir("../")
     shutil.rmtree("/%s" % unique_directory_name)
 
-    
+def find_pairs():
+
+
+
+# MATH
+
+def dot_product(v, w):
+    '''
+    This function takes two equal
+    coordinate vectors and returns a single number,
+    scalar product
+    '''
+    return v[0] * w[0] + v[1] * w[1] + v[2] * w[2]
+
+def rmat(axis, phi):
+    '''
+    This function counts rotation matrix by given axis and angle
+    '''
+    axis=axis/ np.linalg.norm(axis)
+    u1=axis[0]
+    u2=axis[1]
+    u3=axis[2]
+    c=np.cos(phi)
+    s=np.sin(phi)
+    return np.array([[   c+(1-c)*u1*u1, (1-c)*u1*u2-u3*s, (1-c)*u1*u3+u2*s],
+                     [(1-c)*u1*u2+u3*s,  (c+(1-c)*u2*u2),(1-c)*u2*u3-u1*s],
+                     [(1-c)*u1*u3-u2*s, (1-c)*u2*u3+u1*s,   c+(1-c)*u3*u3]])
